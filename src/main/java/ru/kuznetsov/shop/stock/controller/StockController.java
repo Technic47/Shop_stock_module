@@ -3,8 +3,8 @@ package ru.kuznetsov.shop.stock.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kuznetsov.shop.data.dto.StockDto;
 import ru.kuznetsov.shop.data.service.StockService;
+import ru.kuznetsov.shop.represent.dto.StockDto;
 import ru.kuznetsov.shop.stock.service.KafkaService;
 
 import java.util.Collection;
