@@ -12,7 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static ru.kuznetsov.shop.represent.common.KafkaConst.*;
+import static ru.kuznetsov.shop.represent.common.KafkaConst.OPERATION_ID_HEADER;
+import static ru.kuznetsov.shop.represent.common.KafkaConst.STORE_SAVE_TOPIC;
 
 @RestController
 @RequestMapping("/stock")
@@ -33,8 +34,12 @@ public class StockController {
     }
 
     @GetMapping("/{id}/store")
-    public ResponseEntity<List<StockDto>> getAllByStoreId(@PathVariable Long id) {
-        return ResponseEntity.ok(stockService.findAllByStoreId(id));
+    public ResponseEntity<List<StockDto>> getAllByStoreId(
+            @PathVariable Long id,
+            @RequestParam("ownerId") String ownerId) {
+        if (ownerId != null && !ownerId.isEmpty()) {
+            return ResponseEntity.ok(stockService.findAllByStoreIdAndOwnerId(id, UUID.fromString(ownerId)));
+        } else return ResponseEntity.ok(stockService.findAllByStoreId(id));
     }
 
     @GetMapping("/{id}/product")
