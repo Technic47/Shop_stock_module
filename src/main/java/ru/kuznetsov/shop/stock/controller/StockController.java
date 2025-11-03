@@ -29,22 +29,12 @@ public class StockController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<StockDto>> getAll() {
-        return ResponseEntity.ok(stockService.findAll());
-    }
-
-    @GetMapping("/{id}/store")
-    public ResponseEntity<List<StockDto>> getAllByStoreId(
-            @PathVariable Long id,
-            @RequestParam("ownerId") String ownerId) {
-        if (ownerId != null && !ownerId.isEmpty()) {
-            return ResponseEntity.ok(stockService.findAllByStoreIdAndOwnerId(id, UUID.fromString(ownerId)));
-        } else return ResponseEntity.ok(stockService.findAllByStoreId(id));
-    }
-
-    @GetMapping("/{id}/product")
-    public ResponseEntity<List<StockDto>> getAllByProductId(@PathVariable Long id) {
-        return ResponseEntity.ok(stockService.findAllByProductId(id));
+    public ResponseEntity<List<StockDto>> getAll(
+            @RequestParam(value = "productId", required = false) Long productId,
+            @RequestParam(value = "storeId", required = false) Long storeId,
+            @RequestParam(value = "ownerId", required = false) UUID ownerId
+    ) {
+        return ResponseEntity.ok(stockService.findAllByOptionalParams(productId, storeId, ownerId));
     }
 
     @PostMapping
