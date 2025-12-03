@@ -1,6 +1,8 @@
 package ru.kuznetsov.shop.stock.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kuznetsov.shop.data.service.KafkaService;
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static ru.kuznetsov.shop.represent.common.KafkaConst.OPERATION_ID_HEADER;
-import static ru.kuznetsov.shop.represent.common.KafkaConst.STORE_SAVE_TOPIC;
+import static ru.kuznetsov.shop.represent.common.KafkaConst.STOCK_SAVE_TOPIC;
 
 @RestController
 @RequestMapping("/stock")
@@ -22,6 +24,8 @@ public class StockController {
 
     private final StockService stockService;
     private final KafkaService kafkaService;
+
+    Logger logger = LoggerFactory.getLogger(StockController.class);
 
     @GetMapping("/{id}")
     public ResponseEntity<StockDto> getById(@PathVariable Long id) {
@@ -38,28 +42,38 @@ public class StockController {
     }
 
     @PostMapping
-    public ResponseEntity<Boolean> create(@RequestBody StockDto storeDto) {
-        return ResponseEntity.ok(kafkaService.sendMessageWithEntity(
-                storeDto,
-                STORE_SAVE_TOPIC,
-                Collections.singletonMap(OPERATION_ID_HEADER, UUID.randomUUID().toString().getBytes())));
+    public ResponseEntity<String> create(@RequestBody StockDto storeDto) {
+        String uuidString = UUID.randomUUID().toString();
+
+        sendMessageToKafka(storeDto, uuidString);
+
+        return ResponseEntity.ok(uuidString);
     }
 
     @PostMapping("/batch")
-    public ResponseEntity<Collection<Boolean>> createBatch(@RequestBody Collection<StockDto> stockDtoCollection) {
-        byte[] operationId = UUID.randomUUID().toString().getBytes();
+    public ResponseEntity<String> createBatch(@RequestBody Collection<StockDto> stockDtoCollection) {
+        String uuidString = UUID.randomUUID().toString();
 
-        return ResponseEntity.ok(
-                stockDtoCollection.stream()
-                        .map(dto -> kafkaService.sendMessageWithEntity(dto,
-                                STORE_SAVE_TOPIC,
-                                Collections.singletonMap(OPERATION_ID_HEADER, operationId)))
-                        .toList()
-        );
+        for (StockDto stockDto : stockDtoCollection) {
+            sendMessageToKafka(stockDto, uuidString);
+        }
+
+        return ResponseEntity.ok(uuidString);
     }
 
     @DeleteMapping("/{id}")
     public void deleteeStore(@PathVariable Long id) {
         stockService.deleteById(id);
+    }
+
+    private void sendMessageToKafka(StockDto stockDto, String uuidString) {
+        boolean sendResult = kafkaService.sendMessageWithEntity(
+                stockDto,
+                STOCK_SAVE_TOPIC,
+                Collections.singletonMap(OPERATION_ID_HEADER, uuidString.getBytes()));
+
+        if (!sendResult) {
+            logger.warn("Failed to send product to topic. Product: {} operation id {}", stockDto, uuidString);
+        }
     }
 }
