@@ -42,8 +42,7 @@ public class StockController {
     }
 
     @GetMapping("/reservation")
-    public ResponseEntity<List<StockDto>> getAllByReservation(
-            @RequestParam Long reservationOrderId){
+    public ResponseEntity<List<StockDto>> getAllByReservation(@RequestParam Long reservationOrderId) {
         return ResponseEntity.ok(stockService.findAllByReservationOrderId(reservationOrderId));
     }
 
