@@ -41,6 +41,12 @@ public class StockController {
         return ResponseEntity.ok(stockService.findAllByOptionalParams(productId, storeId, ownerId));
     }
 
+    @GetMapping("/reservation")
+    public ResponseEntity<List<StockDto>> getAllByReservation(
+            @RequestParam Long reservationOrderId){
+        return ResponseEntity.ok(stockService.findAllByReservationOrderId(reservationOrderId));
+    }
+
     @PostMapping
     public ResponseEntity<String> create(@RequestBody StockDto storeDto) {
         String uuidString = UUID.randomUUID().toString();
