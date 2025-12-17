@@ -42,8 +42,8 @@ public class StockController {
     }
 
     @GetMapping("/reservation")
-    public ResponseEntity<List<StockDto>> getAllByReservation(@RequestParam Long reservationOrderId) {
-        return ResponseEntity.ok(stockService.findAllByReservationOrderId(reservationOrderId));
+    public ResponseEntity<List<StockDto>> getAllByReservation(@RequestParam String reservationOrderId) {
+        return ResponseEntity.ok(stockService.findAllByReservationOrderId(Long.parseLong(reservationOrderId)));
     }
 
     @PostMapping
