@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kuznetsov.shop.data.service.KafkaService;
 import ru.kuznetsov.shop.data.service.StockService;
+import ru.kuznetsov.shop.kafka.service.KafkaService;
 import ru.kuznetsov.shop.represent.dto.StockDto;
 
 import java.util.Collection;

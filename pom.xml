@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.technic47</groupId>
         <artifactId>shop-spring-boot-starter</artifactId>
-        <version>1.0.29</version>
+        <version>1.0.31</version>
     </parent>
 
     <artifactId>Stock_module</artifactId>
@@ -37,6 +37,11 @@
             <groupId>io.github.technic47</groupId>
             <artifactId>parameter</artifactId>
             <version>${parameter-access.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.technic47</groupId>
+            <artifactId>kafka-service</artifactId>
+            <version>${kafka-service.version}</version>
         </dependency>
 
         <dependency>
