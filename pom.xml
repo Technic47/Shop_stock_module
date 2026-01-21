@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>Stock_module</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <name>Stock_module</name>
     <description>Stock_module</description>
 

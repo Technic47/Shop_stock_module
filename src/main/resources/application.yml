@@ -1,5 +1,5 @@
 spring:
   application:
-    name: stock
+    name: ${STOCK_MODULE_NAME}
   config:
     import: optional:configserver:${CONFIG_SERVER_URL}
