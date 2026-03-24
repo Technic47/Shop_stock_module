@@ -47,10 +47,10 @@ public class StockController {
     }
 
     @PostMapping
-    public ResponseEntity<String> create(@RequestBody StockDto storeDto) {
+    public ResponseEntity<String> create(@RequestBody StockDto stockDto) {
         String uuidString = UUID.randomUUID().toString();
 
-        sendMessageToKafka(storeDto, uuidString);
+        sendMessageToKafka(stockDto, uuidString);
 
         return ResponseEntity.ok(uuidString);
     }
@@ -67,7 +67,7 @@ public class StockController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteeStore(@PathVariable Long id) {
+    public void deleteeStock(@PathVariable Long id) {
         stockService.deleteById(id);
     }
 
