@@ -8,19 +8,21 @@ import org.springframework.web.bind.annotation.*;
 import ru.kuznetsov.shop.data.service.StockService;
 import ru.kuznetsov.shop.kafka.service.KafkaService;
 import ru.kuznetsov.shop.represent.dto.StockDto;
+import ru.kuznetsov.shop.stock.api.StockControllerApi;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static ru.kuznetsov.shop.represent.common.KafkaConst.OPERATION_ID_HEADER;
 import static ru.kuznetsov.shop.represent.common.KafkaConst.STOCK_SAVE_TOPIC;
 
 @RestController
 @RequestMapping("/stock")
 @RequiredArgsConstructor
-public class StockController {
+public class StockController implements StockControllerApi {
 
     private final StockService stockService;
     private final KafkaService kafkaService;
@@ -29,7 +31,10 @@ public class StockController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StockDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(stockService.findById(id));
+        StockDto byId = stockService.findById(id);
+        return byId == null ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(byId);
     }
 
     @GetMapping()
@@ -38,12 +43,20 @@ public class StockController {
             @RequestParam(value = "storeId", required = false) Long storeId,
             @RequestParam(value = "ownerId", required = false) UUID ownerId
     ) {
-        return ResponseEntity.ok(stockService.findAllByOptionalParams(productId, storeId, ownerId));
+        List<StockDto> allByOptionalParams = stockService.findAllByOptionalParams(productId, storeId, ownerId);
+
+        return allByOptionalParams.isEmpty() ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(allByOptionalParams);
     }
 
     @GetMapping("/reservation")
     public ResponseEntity<List<StockDto>> getAllByReservation(@RequestParam String reservationOrderId) {
-        return ResponseEntity.ok(stockService.findAllByReservationOrderId(Long.parseLong(reservationOrderId)));
+        List<StockDto> allByReservationOrderId = stockService.findAllByReservationOrderId(Long.parseLong(reservationOrderId));
+
+        return allByReservationOrderId.isEmpty() ?
+                ResponseEntity.status(NO_CONTENT).build()
+                : ResponseEntity.ok(allByReservationOrderId);
     }
 
     @PostMapping
@@ -67,7 +80,7 @@ public class StockController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteeStock(@PathVariable Long id) {
+    public void deleteStock(@PathVariable Long id) {
         stockService.deleteById(id);
     }
 
