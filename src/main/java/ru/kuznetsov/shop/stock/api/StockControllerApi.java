@@ -179,6 +179,35 @@ public interface StockControllerApi {
                     ))
             @RequestBody Collection<StockDto> stockDtoCollection);
 
+    @Operation(summary = "Обновление запаса", description = "Обновление запаса")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = StockDto.class,
+                                    description = "Обновлённая сущность"
+                            )
+                    ),
+                    description = "Сущность обновлена"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    content = @Content(
+                            schema = @Schema(hidden = true)
+                    ),
+                    description = "Не корректно указаны данные"
+            )
+    })
+    ResponseEntity<StockDto> update(
+            @Parameter(description = "Модель запаса для обновления", required = true,
+                    schema = @Schema(
+                            implementation = StockDto.class,
+                            description = "Запас"
+                    ))
+            @RequestBody StockDto stockDto);
+
     @Operation(summary = "Удаление по id", description = "Удаление сущности по id записи")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Запас удалён"),

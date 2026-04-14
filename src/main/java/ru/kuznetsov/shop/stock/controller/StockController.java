@@ -79,6 +79,11 @@ public class StockController implements StockControllerApi {
         return ResponseEntity.ok(uuidString);
     }
 
+    @PutMapping
+    public ResponseEntity<StockDto> update(@RequestBody StockDto stockDto) {
+        return ResponseEntity.ok(stockService.update(stockDto));
+    }
+
     @DeleteMapping("/{id}")
     public void deleteStock(@PathVariable Long id) {
         stockService.deleteById(id);
